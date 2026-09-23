@@ -23,6 +23,8 @@ function fetchRepos(): GhRepo[] {
       "cheunjm",
       "--source",
       "--no-archived",
+      "--visibility",
+      "public",
       "--limit",
       "200",
       "--json",
