@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, description, repoUrl, stars, language, updatedAt } =
+	project.data;
+
+const formattedDate = new Intl.DateTimeFormat('en-US', {
+	year: 'numeric',
+	month: 'short',
+}).format(updatedAt);
+---
+
+<a
+	href={repoUrl}
+	class="card"
+	target="_blank"
+	rel="noopener noreferrer"
+>
+	<div class="card-head">
+		<h3>{title}</h3>
+		<span class="stars" aria-label={`${stars} stars`}>★ {stars}</span>
+	</div>
+	{description && <p class="description">{description}</p>}
+	<div class="meta">
+		{language && <span class="language">{language}</span>}
+		<span class="updated">Updated {formattedDate}</span>
+	</div>
+</a>
+
+<style>
+	.card {
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		padding: 24px;
+		border: 1px solid var(--border);
+		border-radius: 8px;
+		background: var(--bg-elevated);
+		color: var(--text);
+		transition: border-color 0.15s ease;
+	}
+
+	.card:hover {
+		border-color: var(--accent);
+		color: var(--text);
+	}
+
+	.card-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 12px;
+	}
+
+	.card-head h3 {
+		font-family: var(--font-mono);
+		font-size: 17px;
+		font-weight: 500;
+		color: var(--text);
+	}
+
+	.stars {
+		flex-shrink: 0;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--text-dim);
+	}
+
+	.description {
+		font-size: 15px;
+		color: var(--text-dim);
+		line-height: 1.5;
+	}
+
+	.meta {
+		display: flex;
+		gap: 16px;
+		margin-top: auto;
+		padding-top: 8px;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--text-dim);
+	}
+
+	.language {
+		color: var(--accent);
+	}
+</style>

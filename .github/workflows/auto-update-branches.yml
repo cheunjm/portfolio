@@ -1,0 +1,27 @@
+name: Auto-update PR branches
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  pull-requests: write
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update open PR branches
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --json number -q '.[].number')
+          for pr in $prs; do
+            echo "Updating PR #$pr..."
+            gh api \
+              --method PUT \
+              "repos/$GITHUB_REPOSITORY/pulls/$pr/update-branch" \
+              -f update_method="rebase" \
+              2>&1 || echo "  Skipped (already up to date or conflict)"
+          done

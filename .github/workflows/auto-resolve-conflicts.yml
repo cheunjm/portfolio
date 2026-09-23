@@ -1,0 +1,72 @@
+name: Auto-resolve PR conflicts
+
+on:
+  workflow_run:
+    workflows: ["Auto-update PR branches"]
+    types: [completed]
+
+jobs:
+  resolve:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Wait for mergeable status to settle
+        run: sleep 30
+
+      - name: Find conflicting PRs and request resolution
+        env:
+          GH_TOKEN: ${{ github.token }}
+          MAX_PRS: "3"
+          SKIP_LABEL: "no-auto-resolve"
+        run: |
+          prs=$(gh pr list --repo "$GITHUB_REPOSITORY" --state open \
+            --json number,headRefName,baseRefName,mergeable,labels,title \
+            --limit 50)
+
+          conflicting=$(echo "$prs" | jq -r --arg skip "$SKIP_LABEL" '
+            [.[] | select(
+              .mergeable == "CONFLICTING" and
+              ([.labels[].name] | index($skip) | not)
+            )] | .[:(env.MAX_PRS | tonumber)][] |
+            [.number, .headRefName, .baseRefName, .title] | @tsv
+          ')
+
+          if [ -z "$conflicting" ]; then
+            echo "No conflicting PRs found. Done."
+            exit 0
+          fi
+
+          echo "$conflicting" | while IFS=$'\t' read -r pr_num head_branch base_branch pr_title; do
+            echo "Processing PR #${pr_num}: ${pr_title}"
+
+            one_hour_ago=$(date -u -d '1 hour ago' '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u -v-1H '+%Y-%m-%dT%H:%M:%SZ')
+            existing=$(gh api "repos/${GITHUB_REPOSITORY}/issues/${pr_num}/comments" \
+              --jq "[.[] | select(.body | test(\"@claude.*resolve.*merge conflict\"; \"i\")) | select(.created_at > \"${one_hour_ago}\")] | length")
+
+            if [ "$existing" != "0" ]; then
+              echo "  Skipping — recent @claude conflict resolution request already exists"
+              continue
+            fi
+
+            comment_body="@claude This PR has merge conflicts with \`${base_branch}\`. Please resolve them:
+
+          1. Fetch the latest \`${base_branch}\` branch
+          2. Rebase this branch (\`${head_branch}\`) onto \`origin/${base_branch}\`
+          3. For each conflict, examine both sides and the surrounding code context to determine the correct resolution. Preserve the intent of both the PR changes and the base branch changes.
+          4. After resolving all conflicts, run any available linters or type checks to verify the resolution compiles correctly.
+          5. Force-push the rebased branch with \`git push --force-with-lease\`.
+
+          **Important:**
+          - If a conflict involves significant architectural changes where the correct resolution is ambiguous, do NOT guess. Instead, describe the conflict, add the \`${SKIP_LABEL}\` label to this PR, and say you need human review.
+          - Preserve all commits from this PR — the goal is to rebase onto ${base_branch}, not to drop commits.
+          - Do not modify any files beyond what is needed to resolve the conflicts."
+
+            gh pr comment "$pr_num" --repo "$GITHUB_REPOSITORY" --body "$comment_body"
+            echo "  Posted @claude comment on PR #${pr_num}"
+
+            sleep 5
+          done
