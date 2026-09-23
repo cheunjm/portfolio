@@ -1,0 +1,121 @@
+:root {
+	--bg: #0a0a0a;
+	--bg-elevated: #141414;
+	--border: #262626;
+	--text: #e4e4e4;
+	--text-dim: #888888;
+	--accent: #7dd3fc;
+
+	--font-mono: 'JetBrains Mono', ui-monospace, monospace;
+	--font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+	--section-pad-y: 100px;
+	--section-pad-x: 64px;
+}
+
+@media (max-width: 640px) {
+	:root {
+		--section-pad-y: 48px;
+		--section-pad-x: 24px;
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	color-scheme: dark;
+}
+
+body {
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-sans);
+	font-size: 17px;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+@media (max-width: 640px) {
+	body {
+		font-size: 15px;
+	}
+}
+
+h1,
+h2,
+h3,
+h4 {
+	margin: 0;
+	font-weight: 500;
+	line-height: 1.2;
+}
+
+p {
+	margin: 0;
+}
+
+ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+a:hover {
+	color: var(--accent);
+}
+
+img,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+.section-label {
+	display: inline-block;
+	font-family: var(--font-mono);
+	font-size: 15px;
+	color: var(--accent);
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+	.section-label {
+		font-size: 13px;
+	}
+}
+
+.container {
+	max-width: 1040px;
+	margin: 0 auto;
+	padding-left: var(--section-pad-x);
+	padding-right: var(--section-pad-x);
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}

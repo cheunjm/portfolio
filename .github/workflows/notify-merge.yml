@@ -1,0 +1,14 @@
+name: Notify on Merge
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  notify:
+    uses: cheunjm/.github/.github/workflows/notify-merge.yml@main
+    with:
+      slack_channel: C0AJD47H6R4
+      repo_label: portfolio
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

@@ -1,0 +1,241 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const experience = [
+	{
+		role: 'Engineer',
+		company: 'SILVIA',
+		dates: '2020–Present',
+		location: 'Seoul, South Korea',
+	},
+	{
+		role: 'AI Researcher',
+		company: 'Tencent Music Entertainment Group',
+		dates: '2019–2020',
+		location: 'Shenzhen, China',
+	},
+	{
+		role: 'Software Engineer Intern',
+		company: 'Google',
+		dates: '2018',
+		location: 'Mountain View, CA',
+	},
+	{
+		role: 'Software Engineer',
+		company: 'Elice',
+		dates: '2018',
+		location: 'Seoul, South Korea',
+	},
+	{
+		role: 'Software Engineer Intern',
+		company: 'Rakuten',
+		dates: '2017',
+		location: 'Tokyo, Japan',
+	},
+];
+
+const education = [
+	{
+		school: 'Harvard University',
+		degree: 'MS, Computational Science and Engineering',
+		dates: '2018–2019',
+	},
+	{
+		school: 'Harvard University',
+		degree: 'BA, Computer Science',
+		dates: '2012–2019',
+	},
+];
+---
+
+<BaseLayout title="Jaemin Cheun">
+	<Header activePage="home" />
+
+	<main>
+		<section class="hero container">
+			<h1>Jaemin Cheun</h1>
+			<p class="tagline">Co-founder &amp; CTO @ SILVIA Health</p>
+			<div class="hero-links">
+				<a href="https://github.com/cheunjm" target="_blank" rel="noopener noreferrer">
+					GitHub
+				</a>
+				<a href="mailto:jaemin@silviahealth.com">Email</a>
+			</div>
+		</section>
+
+		<section class="about container">
+			<span class="section-label">About</span>
+			<p class="bio">
+				Co-founder &amp; CTO @ SILVIA Health. Building AI-driven healthcare
+				tools. Previously AI Researcher at Tencent Music Entertainment,
+				with engineering roles at Google, Elice, and Rakuten. MS in
+				Computational Science &amp; Engineering, Harvard.
+			</p>
+
+			<div class="about-grid">
+				<div>
+					<h2>Experience</h2>
+					<ul class="experience-list">
+						{
+							experience.map((item) => (
+								<li>
+									<div class="entry-head">
+										<span class="role">{item.role}</span>
+										<span class="dates">{item.dates}</span>
+									</div>
+									<div class="entry-sub">
+										{item.company} · {item.location}
+									</div>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+
+				<div>
+					<h2>Education</h2>
+					<ul class="education-list">
+						{
+							education.map((item) => (
+								<li>
+									<div class="entry-head">
+										<span class="role">{item.school}</span>
+										<span class="dates">{item.dates}</span>
+									</div>
+									<div class="entry-sub">{item.degree}</div>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<Footer />
+</BaseLayout>
+
+<style>
+	.hero {
+		padding-top: var(--section-pad-y);
+		padding-bottom: var(--section-pad-y);
+	}
+
+	.hero h1 {
+		font-size: 56px;
+		font-weight: 700;
+		font-family: var(--font-sans);
+		color: var(--text);
+	}
+
+	.tagline {
+		margin-top: 16px;
+		font-family: var(--font-mono);
+		font-size: 17px;
+		color: var(--accent);
+	}
+
+	.hero-links {
+		display: flex;
+		gap: 24px;
+		margin-top: 32px;
+		font-family: var(--font-mono);
+		font-size: 15px;
+	}
+
+	.hero-links a {
+		color: var(--text-dim);
+		border-bottom: 1px solid var(--border);
+		padding-bottom: 2px;
+	}
+
+	.hero-links a:hover {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+
+	.about {
+		padding-bottom: var(--section-pad-y);
+	}
+
+	.bio {
+		max-width: 640px;
+		margin-top: 20px;
+		color: var(--text);
+	}
+
+	.about-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 48px;
+		margin-top: 48px;
+	}
+
+	.about-grid h2 {
+		font-family: var(--font-mono);
+		font-size: 15px;
+		font-weight: 500;
+		color: var(--text-dim);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		margin-bottom: 20px;
+	}
+
+	.experience-list li,
+	.education-list li {
+		padding: 14px 0;
+		border-top: 1px solid var(--border);
+	}
+
+	.experience-list li:last-child,
+	.education-list li:last-child {
+		padding-bottom: 0;
+	}
+
+	.entry-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 12px;
+	}
+
+	.role {
+		font-weight: 500;
+		color: var(--text);
+	}
+
+	.dates {
+		flex-shrink: 0;
+		font-family: var(--font-mono);
+		font-size: 13px;
+		color: var(--text-dim);
+	}
+
+	.entry-sub {
+		margin-top: 4px;
+		font-size: 15px;
+		color: var(--text-dim);
+	}
+
+	@media (max-width: 640px) {
+		.hero {
+			padding-top: 48px;
+		}
+
+		.hero h1 {
+			font-size: 36px;
+		}
+
+		.hero-links {
+			flex-direction: column;
+			gap: 12px;
+		}
+
+		.about-grid {
+			grid-template-columns: 1fr;
+			gap: 32px;
+		}
+	}
+</style>

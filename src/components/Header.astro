@@ -1,0 +1,82 @@
+---
+interface Props {
+	activePage: 'home' | 'projects';
+}
+
+const { activePage } = Astro.props;
+---
+
+<header class="site-header">
+	<div class="container header-inner">
+		<a href="/" class="logo">~/jaemin</a>
+		<nav aria-label="Primary">
+			<ul>
+				<li>
+					<a href="/" class={activePage === 'home' ? 'active' : ''}>
+						Home
+					</a>
+				</li>
+				<li>
+					<a
+						href="/projects"
+						class={activePage === 'projects' ? 'active' : ''}
+					>
+						Projects
+					</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</header>
+
+<style>
+	.site-header {
+		border-bottom: 1px solid var(--border);
+	}
+
+	.header-inner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-top: 24px;
+		padding-bottom: 24px;
+	}
+
+	.logo {
+		font-family: var(--font-mono);
+		font-size: 17px;
+		font-weight: 500;
+		color: var(--text);
+	}
+
+	.logo:hover {
+		color: var(--accent);
+	}
+
+	nav ul {
+		display: flex;
+		gap: 32px;
+	}
+
+	nav a {
+		font-family: var(--font-mono);
+		font-size: 15px;
+		color: var(--text-dim);
+	}
+
+	nav a:hover,
+	nav a.active {
+		color: var(--accent);
+	}
+
+	@media (max-width: 640px) {
+		.header-inner {
+			padding-top: 20px;
+			padding-bottom: 20px;
+		}
+
+		nav ul {
+			gap: 20px;
+		}
+	}
+</style>
